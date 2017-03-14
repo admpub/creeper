@@ -81,9 +81,8 @@ func (n *Node) SearchFlatScope(name string) *Node {
 	})
 	if len(ns) > 0 {
 		return ns[0]
-	} else {
-		return nil
 	}
+	return nil
 }
 
 func (n *Node) ChildFilter(cb func(*Node) bool) *Node {
@@ -93,9 +92,8 @@ func (n *Node) ChildFilter(cb func(*Node) bool) *Node {
 	ns := n.FirstChildNode.Filter(cb)
 	if len(ns) > 0 {
 		return ns[0]
-	} else {
-		return nil
 	}
+	return nil
 }
 
 func (n *Node) Search(name string) *Node {
@@ -119,9 +117,8 @@ func (n *Node) NextDirectorNode() *Node {
 func (n *Node) Value() (string, error) {
 	if n.Fun != nil {
 		return n.Fun.Invoke()
-	} else {
-		return n.Page.Body()
 	}
+	return n.Page.Body()
 }
 
 func ParseNode(ln []string) []*Node {
@@ -173,7 +170,7 @@ func ParseNode(ln []string) []*Node {
 		}
 		if len(node.Sn[3]) > 0 {
 			if node.Sn[3][0] == '.' {
-				node.Fun = ParseFun(node, "$" + node.Sn[3])
+				node.Fun = ParseFun(node, "$"+node.Sn[3])
 			} else {
 				node.Fun = ParseFun(node, node.Sn[3])
 			}

@@ -3,9 +3,9 @@ package creeper
 import (
 	"bytes"
 	"regexp"
+	"strconv"
 	"strings"
 	"unicode"
-	"strconv"
 )
 
 var (
@@ -127,29 +127,29 @@ func trimTownValue(s string) string {
 // ("str_exam\"ple", /exp_\/example\n/, 2)
 func parseParams(s string) (map[string]string, int) {
 	endPos := -1
-
 	kvMap := map[string]string{}
-	pK := ""
-	pIsK := false
+	var (
+		pK   string
+		pIsK bool
+		sb   bytes.Buffer
 
-	var sb bytes.Buffer
+		inKey bool
+		inStr bool // "example"
+		inExp bool // `example`
+		inStd bool //  example
 
-	inKey := false
-	inStr := false // "example"
-	inExp := false // `example`
-	inStd := false //  example
+		noKeyIndex int
 
-	noKeyIndex := 0
-	insertVal := func(v string) {
-		if pIsK {
-			kvMap[pK] = strings.TrimSpace(sb.String())
-		} else {
-			kvMap["$"+strconv.Itoa(noKeyIndex)] = v
-			noKeyIndex++
+		insertVal = func(v string) {
+			if pIsK {
+				kvMap[pK] = strings.TrimSpace(sb.String())
+			} else {
+				kvMap["$"+strconv.Itoa(noKeyIndex)] = v
+				noKeyIndex++
+			}
+			pIsK = false
 		}
-		pIsK = false
-	}
-
+	)
 	for i, c := range s {
 		cso := func(o int) int32 {
 			oi := i + o
@@ -172,7 +172,8 @@ func parseParams(s string) (map[string]string, int) {
 
 				}
 				return rune(s[j])
-			} else if o > 0 {
+			}
+			if o > 0 {
 				j := i
 				for j < len(s)-1 && o != 0 {
 					j++
@@ -181,10 +182,8 @@ func parseParams(s string) (map[string]string, int) {
 					}
 				}
 				return rune(s[j])
-			} else {
-				return rune(s[i])
 			}
-			return 0
+			return rune(s[i])
 		}
 
 		if i == 0 && c != '(' {

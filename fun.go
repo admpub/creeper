@@ -20,7 +20,7 @@ type Fun struct {
 	Name   string
 	Params []string
 
-	Document *goquery.Document
+	Document  *goquery.Document
 	Selection *goquery.Selection
 	Result    string
 
@@ -55,9 +55,8 @@ func PowerfulFind(s *goquery.Selection, q string) *goquery.Selection {
 			sel = sel.Find(q)
 		}
 		return sel
-	} else {
-		return s.Find(q)
 	}
+	return s.Find(q)
 }
 
 func (f *Fun) PageBody() (*goquery.Document, error) {
@@ -192,9 +191,8 @@ func (f *Fun) Invoke() (string, error) {
 	}
 	if f.NextFun != nil {
 		return f.NextFun.Invoke()
-	} else {
-		return f.Result, nil
 	}
+	return f.Result, nil
 }
 
 func ParseFun(n *Node, s string) *Fun {
@@ -207,7 +205,7 @@ func ParseFun(n *Node, s string) *Fun {
 	ls := s[len(sa[0]):]
 	ps := []string{}
 	p, pl := parseParams(ls)
-	for i := 0;; i++ {
+	for i := 0; ; i++ {
 		if v, e := p["$"+strconv.Itoa(i)]; e {
 			ps = append(ps, v)
 		} else {

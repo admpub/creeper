@@ -10,14 +10,14 @@ type Page struct {
 	Raw  string
 	Node *Node
 
-	Town     *Town
-	Ref      string
+	Town *Town
+	Ref  string
 
-	NextMode bool
-	NextUrl string
+	NextMode       bool
+	NextUrl        string
 	NextPendingUrl string
-	NextReady bool
-	NextNoMore bool
+	NextReady      bool
+	NextNoMore     bool
 
 	Index int
 }
@@ -52,9 +52,8 @@ func (p *Page) Url() (string, error) {
 			}
 		}
 		return p.Town.Value(), nil
-	} else {
-		return p.Node.SearchRef(p.Ref).Value()
 	}
+	return p.Node.SearchRef(p.Ref).Value()
 }
 
 func (p *Page) Body() (string, error) {
